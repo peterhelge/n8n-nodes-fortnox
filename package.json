@@ -1,0 +1,45 @@
+{
+	"name": "@peterhelge/n8n-nodes-fortnox",
+	"version": "0.2.0",
+	"description": "n8n community node for the Fortnox accounting/invoicing API",
+	"keywords": [
+		"n8n-community-node-package"
+	],
+	"license": "MIT",
+	"homepage": "https://github.com/peterhelge/n8n-nodes-fortnox",
+	"author": {
+		"name": "Peter Helge",
+		"email": "peter.helge@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/peterhelge/n8n-nodes-fortnox.git"
+	},
+	"main": "index.js",
+	"scripts": {
+		"build": "n8n-node build",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "release-it"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"credentials": [
+			"dist/credentials/FortnoxOAuth2Api.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Fortnox/Fortnox.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "latest",
+		"typescript": "^5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
