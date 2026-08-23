@@ -6,7 +6,7 @@ import type {
 	INodeTypeDescription,
 	JsonObject,
 } from 'n8n-workflow';
-import { NodeApiError, NodeConnectionTypes } from 'n8n-workflow';
+import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workflow';
 
 import { customerFields, customerOperations } from './descriptions/CustomerDescription';
 import { invoiceFields, invoiceOperations } from './descriptions/InvoiceDescription';
@@ -76,9 +76,15 @@ export class Fortnox implements INodeType {
 						const response = await fortnoxApiRequest.call(
 							this,
 							'GET',
-							`/customers/${customerNumber}`,
+							`/customers/${encodeURIComponent(customerNumber)}`,
 						);
 						responseData = response.Customer as IDataObject;
+					} else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`The operation "${operation}" is not supported for resource "customer"`,
+							{ itemIndex: i },
+						);
 					}
 				} else if (resource === 'invoice') {
 					if (operation === 'get') {
@@ -87,7 +93,7 @@ export class Fortnox implements INodeType {
 						const response = await fortnoxApiRequest.call(
 							this,
 							'GET',
-							`/invoices/${documentNumber}`,
+							`/invoices/${encodeURIComponent(documentNumber)}`,
 						);
 						responseData = response.Invoice as IDataObject;
 					} else if (operation === 'getAll') {
@@ -124,7 +130,17 @@ export class Fortnox implements INodeType {
 							const response = await fortnoxApiRequest.call(this, 'GET', '/invoices', {}, qs);
 							responseData = ((response.Invoices as IDataObject[]) ?? []).slice(0, limit);
 						}
+					} else {
+						throw new NodeOperationError(
+							this.getNode(),
+							`The operation "${operation}" is not supported for resource "invoice"`,
+							{ itemIndex: i },
+						);
 					}
+				} else {
+					throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported`, {
+						itemIndex: i,
+					});
 				}
 
 				const executionData = this.helpers.constructExecutionMetaData(
