@@ -29,6 +29,28 @@ export async function fortnoxApiRequest(
 	return this.helpers.httpRequestWithAuthentication.call(this, 'fortnoxOAuth2Api', options);
 }
 
+// Fortnox's print endpoints (e.g. /invoices/{DocumentNumber}/print) return a
+// raw PDF instead of JSON when the request specifies Accept: application/pdf.
+export async function fortnoxApiRequestBinary(
+	this: IExecuteFunctions,
+	endpoint: string,
+): Promise<Buffer> {
+	const options: IHttpRequestOptions = {
+		method: 'GET',
+		url: `${BASE_URL}${endpoint}`,
+		headers: {
+			Accept: 'application/pdf',
+		},
+		encoding: 'arraybuffer',
+	};
+
+	return this.helpers.httpRequestWithAuthentication.call(
+		this,
+		'fortnoxOAuth2Api',
+		options,
+	) as unknown as Promise<Buffer>;
+}
+
 // Fortnox paginates list endpoints with a "page" query parameter and returns
 // pagination details in the "MetaInformation" object of the response
 // (e.g. "@TotalPages"). This walks every page and concatenates the given

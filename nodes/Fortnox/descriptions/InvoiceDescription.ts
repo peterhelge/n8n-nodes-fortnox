@@ -24,6 +24,12 @@ export const invoiceOperations: INodeProperties[] = [
 				description: 'Retrieve many invoices',
 				action: 'Get many invoices',
 			},
+			{
+				name: 'Get PDF',
+				value: 'getPdf',
+				description: 'Download an invoice as a PDF file',
+				action: 'Download an invoice as a PDF file',
+			},
 		],
 		default: 'get',
 	},
@@ -42,7 +48,7 @@ export const invoiceFields: INodeProperties[] = [
 		displayOptions: {
 			show: {
 				resource: ['invoice'],
-				operation: ['get'],
+				operation: ['get', 'getPdf'],
 			},
 		},
 		description: 'The document number of the invoice to retrieve',

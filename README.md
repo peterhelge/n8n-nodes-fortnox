@@ -44,6 +44,7 @@ Notes on how the credential is wired up, in case you need to troubleshoot:
   - **Filter**: one of Fortnox's predefined filters (`unpaid`, `unpaidoverdue`, `fullypaid`, `cancelled`, `unbooked`).
   - **Customer Number**, **From Date**, **To Date**.
   - **Return All** or a **Limit** on the number of results.
+- **Get PDF** — Download an invoice as a PDF file (binary output), using Fortnox's print endpoint.
 
 ## Usage
 
@@ -58,6 +59,8 @@ To fetch one specific invoice, set Operation to **Get** and enter its **Document
 
 To get the customer's contact details for an invoice, take the invoice's `CustomerNumber` field and feed it into a second **Fortnox** node with Resource: **Customer**, Operation: **Get**.
 
+To download an invoice as a PDF (e.g. to attach to an email), set Operation to **Get PDF** and enter its **Document Number**. The output item carries the PDF as binary data under the `data` key.
+
 If you're new to n8n, see the [Try it out](https://docs.n8n.io/try-it-out/) guide to get a workflow running end to end.
 
 ## Compatibility
@@ -71,6 +74,7 @@ This is a first (v1) release, scoped deliberately small. A few things depend on 
 - **Pagination** assumes Fortnox's list responses include a `MetaInformation.@TotalPages` field. This matches Fortnox's documented pagination pattern, but hasn't been verified against a live response with more than one page of invoices.
 - **Scopes**: the credential requests `invoice companyinformation customer`. Each must be enabled as a permission ("Faktura", "Företagsinformation" and "Kund" under "Behörigheter") on your app in the Fortnox Developer Portal, or authorization will fail with `invalid_scope`.
 - Only the fields documented by Fortnox as stable filters are exposed (`filter`, `customernumber`, `fromdate`, `todate`). Fortnox's API has more query parameters (e.g. account range, cost center) that could be added later.
+- **Get PDF** assumes Fortnox's `/invoices/{DocumentNumber}/print` endpoint returns a raw PDF when the request sends `Accept: application/pdf` (Fortnox's documented convention for print endpoints across resources). This hasn't been confirmed against a live response — verify the downloaded file actually opens as a valid PDF before relying on it.
 
 ## Roadmap (not in this release)
 
@@ -80,7 +84,6 @@ Ideas for a v2, intentionally left out to keep v1 small and finished:
 - More resources: **Payments**, **Vouchers/Articles**.
 - Get Many / Create / Update operations for Customers (this release is read-only, single-record).
 - Create/Update operations for Invoices (this release is read-only).
-- Binary output for invoice PDFs (Fortnox exposes a print/PDF endpoint per invoice).
 
 ## Resources
 

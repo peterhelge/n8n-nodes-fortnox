@@ -10,7 +10,11 @@ import { NodeApiError, NodeConnectionTypes, NodeOperationError } from 'n8n-workf
 
 import { customerFields, customerOperations } from './descriptions/CustomerDescription';
 import { invoiceFields, invoiceOperations } from './descriptions/InvoiceDescription';
-import { fortnoxApiRequest, fortnoxApiRequestAllItems } from './GenericFunctions';
+import {
+	fortnoxApiRequest,
+	fortnoxApiRequestAllItems,
+	fortnoxApiRequestBinary,
+} from './GenericFunctions';
 
 export class Fortnox implements INodeType {
 	description: INodeTypeDescription = {
@@ -130,6 +134,25 @@ export class Fortnox implements INodeType {
 							const response = await fortnoxApiRequest.call(this, 'GET', '/invoices', {}, qs);
 							responseData = ((response.Invoices as IDataObject[]) ?? []).slice(0, limit);
 						}
+					} else if (operation === 'getPdf') {
+						const documentNumber = this.getNodeParameter('documentNumber', i) as string;
+
+						const buffer = await fortnoxApiRequestBinary.call(
+							this,
+							`/invoices/${encodeURIComponent(documentNumber)}/print`,
+						);
+						const binaryData = await this.helpers.prepareBinaryData(
+							buffer,
+							`invoice-${documentNumber}.pdf`,
+							'application/pdf',
+						);
+
+						returnData.push({
+							json: { documentNumber },
+							binary: { data: binaryData },
+							pairedItem: { item: i },
+						});
+						continue;
 					} else {
 						throw new NodeOperationError(
 							this.getNode(),
