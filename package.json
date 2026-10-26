@@ -9,7 +9,8 @@
 	"homepage": "https://github.com/peterhelge/n8n-nodes-fortnox",
 	"author": {
 		"name": "Peter Helge",
-		"email": "peter.helge@gmail.com"
+		"email": "peter.helge@gmail.com",
+		"url": "https://klarar.se/"
 	},
 	"repository": {
 		"type": "git",
