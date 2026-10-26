@@ -94,3 +94,7 @@ Ideas for a v2, intentionally left out to keep v1 small and finished:
 ## License
 
 [MIT](LICENSE.md)
+
+## Author
+
+Built and maintained by Peter Helge at [Klarar](https://klarar.se/), free tools for Swedish small businesses: cash flow, quotes and employer contributions.
